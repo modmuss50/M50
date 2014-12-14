@@ -1,4 +1,7 @@
 print:"This is a test"
-place:"name"
-print:"after name"
 goto:"name"
+
+print:"This does not get called"
+
+place:"name"
+print:"after name place"

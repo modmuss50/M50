@@ -1,7 +1,6 @@
 package modmuss50.M50;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +22,15 @@ public class m50Main {
 			System.exit(-1);
 		}
 		System.out.println("Will now try to run " + Integer.toString(countLines(script)) + " lines of script");
+		System.out.println();
+		System.out.println();
 
+		loadPlaces();
 		readFrom(1);
+
+		System.out.println();
+		System.out.println();
+		System.out.println("Script finished");
 
 	}
 
@@ -50,22 +56,35 @@ public class m50Main {
 		br.close();
 	}
 
+	public static void loadPlaces() throws IOException {
+		int linenumber = 1;
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(stopReading){
+				return;
+			}
+			if(line.startsWith("place")){
+				String name = line;
+				gotos.put(linenumber, name.replaceAll("\"", "").replace("place:", ""));
+			}
+			linenumber += 1;
+		}
+		br.close();
+	}
+
 
 
 	public static boolean processLine (String line, int lineNumber) throws IOException {
 		if(line.startsWith("print")){
 			String message = line.replaceAll("\"", "").replace("print:", "");
 			System.out.println(message);
-		} else if(line.startsWith("place")){
-			String name = line;
-			gotos.put(lineNumber, name.replaceAll("\"", "").replace("place:", ""));
 		} else if(line.startsWith("goto")){
 			String name = line.replaceAll("\"", "").replace("goto:", "");
 			for(Map.Entry<Integer, String> entry : gotos.entrySet()){
 				if(entry.getValue().equals(name)){
-					stopReading = true;
 					readFrom(entry.getKey());
-					
+					stopReading = true;
 				}
 			}
 		}
