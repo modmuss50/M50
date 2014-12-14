@@ -1,1 +1,4 @@
-print:"hello"
+print:"This is a test"
+place:"name"
+print:"after name"
+goto:"name"
