@@ -12,12 +12,11 @@ public class m50Main {
 
 	public static Boolean stopReading = false;
 
-
 	public static void main(String[] args) throws IOException {
 		System.out.println("Starting M50");
 		File thisfolder = new File(".").getAbsoluteFile();
 		script = new File(thisfolder, "script.m50");
-		if(!script.exists()){
+		if (!script.exists()) {
 			System.out.println("No script file found!");
 			System.exit(-1);
 		}
@@ -25,9 +24,18 @@ public class m50Main {
 		System.out.println();
 		System.out.println();
 
-		loadPlaces();
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String scriptArgs;
+		scriptArgs = br.readLine();
+		if(!scriptArgs.startsWith("#m50")){
+			System.out.println("this is not a script file");
+			System.exit(-2);
+		}
+		br.close();
+		if(!scriptArgs.contains("noPlaces")){
+			loadPlaces();
+		}
 		readFrom(1);
-
 		System.out.println();
 		System.out.println();
 		System.out.println("Script finished");
@@ -40,15 +48,15 @@ public class m50Main {
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(stopReading){
+			if (stopReading) {
 				return;
 			}
-			if(linenumber == startLine){
+			if (linenumber == startLine) {
 				proccess = true;
 			}
-			if(proccess){
-				if(!processLine(line, linenumber)){
-				return;
+			if (proccess) {
+				if (!processLine(line, linenumber)) {
+					return;
 				}
 			}
 			linenumber += 1;
@@ -61,10 +69,10 @@ public class m50Main {
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(stopReading){
+			if (stopReading) {
 				return;
 			}
-			if(line.startsWith("place")){
+			if (line.startsWith("place")) {
 				String name = line;
 				gotos.put(linenumber, name.replaceAll("\"", "").replace("place:", ""));
 			}
@@ -74,15 +82,14 @@ public class m50Main {
 	}
 
 
-
-	public static boolean processLine (String line, int lineNumber) throws IOException {
-		if(line.startsWith("print")){
+	public static boolean processLine(String line, int lineNumber) throws IOException {
+		if (line.startsWith("print")) {
 			String message = line.replaceAll("\"", "").replace("print:", "");
 			System.out.println(message);
-		} else if(line.startsWith("goto")){
+		} else if (line.startsWith("goto")) {
 			String name = line.replaceAll("\"", "").replace("goto:", "");
-			for(Map.Entry<Integer, String> entry : gotos.entrySet()){
-				if(entry.getValue().equals(name)){
+			for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
+				if (entry.getValue().equals(name)) {
 					readFrom(entry.getKey());
 					stopReading = true;
 				}

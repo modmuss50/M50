@@ -1,3 +1,4 @@
+#m50
 print:"This is a test"
 goto:"name"
 
