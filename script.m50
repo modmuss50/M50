@@ -6,3 +6,6 @@ print:"This does not get called"
 
 place:"name"
 print:"after name place"
+
+input:hello:Yo
+print:hello

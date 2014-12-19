@@ -3,12 +3,15 @@ package modmuss50.M50;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class m50Main {
 
 	public static File script;
 
 	public static HashMap<Integer, String> gotos = new HashMap<Integer, String>();
+	//Fist string is the var name second is the data
+	public static HashMap<String, String> strVars = new HashMap<String, String>();
 
 	public static Boolean stopReading = false;
 
@@ -33,6 +36,7 @@ public class m50Main {
 		}
 		br.close();
 		if(!scriptArgs.contains("noPlaces")){
+			//doing this allows us to go to places after the goto statement
 			loadPlaces();
 		}
 		readFrom(1);
@@ -84,8 +88,18 @@ public class m50Main {
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
 		if (line.startsWith("print")) {
-			String message = line.replaceAll("\"", "").replace("print:", "");
-			System.out.println(message);
+			String[] vars = line.split(":");
+			if(vars[1].contains("\"")){
+				String message = line.replaceAll("\"", "").replace("print:", "");
+				System.out.println(message);
+			} else {
+				for (Map.Entry<String, String> entry : strVars.entrySet()) {
+					if(entry.getKey().equals(vars[1])){
+						System.out.println(entry.getValue());
+					}
+				}
+			}
+
 		} else if (line.startsWith("goto")) {
 			String name = line.replaceAll("\"", "").replace("goto:", "");
 			for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
@@ -94,6 +108,17 @@ public class m50Main {
 					stopReading = true;
 				}
 			}
+		} else if (line.startsWith("stop")){
+			System.exit(-1);
+		} else if(line.startsWith("input:")){
+			String[] vars = line.split(":");
+			Scanner reader = new Scanner(System.in);
+			if(vars.length >= 3){
+				System.out.println(vars[2]);
+			} else {
+				System.out.println("Enter input:");
+			}
+			strVars.put(vars[1], reader.next());
 		}
 		return true;
 	}
