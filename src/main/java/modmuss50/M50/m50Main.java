@@ -34,12 +34,12 @@ public class m50Main {
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String scriptArgs;
 		scriptArgs = br.readLine();
-		if(!scriptArgs.startsWith("#m50")){
+		if (!scriptArgs.startsWith("#m50")) {
 			System.out.println("this is not a script file");
 			System.exit(-2);
 		}
 		br.close();
-		if(!scriptArgs.contains("noPlaces")){
+		if (!scriptArgs.contains("noPlaces")) {
 			//doing this allows us to go to places after the goto statement
 			loadPlaces();
 		}
@@ -80,17 +80,18 @@ public class m50Main {
 				return;
 			}
 			if (line.startsWith("place")) {
-				String name = line;
-				Boolean canAdd= true;
+				String[] vars = line.split(":");
+				String name = vars[1];
+				Boolean canAdd = true;
 				for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
-					if(entry.getValue().equals(name.replaceAll("\"", "").replace("place:", ""))){
+					if (entry.getValue().equals(name)) {
 						String output = entry.getValue();
 						System.out.println("A place exits with that name! :" + linenumber);
 						canAdd = false;
 					}
 				}
-				if(canAdd){
-					gotos.put(linenumber, name.replaceAll("\"", "").replace("place:", ""));
+				if (canAdd) {
+					gotos.put(linenumber, name);
 				}
 			}
 			linenumber += 1;
@@ -101,52 +102,53 @@ public class m50Main {
 	public static boolean processLine(String line, int lineNumber) throws IOException {
 		if (line.startsWith("print")) {
 			String[] vars = line.split(":");
-			if(vars[1].contains("\"")){
+			if (vars[1].contains("\"")) {
 				String message = line.replaceAll("\"", "").replace("print:", "");
 				System.out.println(message);
 			} else {
 				for (Map.Entry<String, String> entry : strVars.entrySet()) {
-					if(entry.getKey().equals(vars[1])){
+					if (entry.getKey().equals(vars[1])) {
 						String output = entry.getValue();
 						System.out.println(output);
 					}
 				}
 				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
-					if(entry.getKey().equals(vars[1])){
+					if (entry.getKey().equals(vars[1])) {
 						Integer output = entry.getValue();
 						System.out.println(output);
 					}
 				}
 				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
-					if(entry.getKey().equals(vars[1])){
+					if (entry.getKey().equals(vars[1])) {
 						Boolean output = entry.getValue();
 						System.out.println(output);
 					}
 				}
 			}
 		} else if (line.startsWith("goto")) {
-			String name = line.replaceAll("\"", "").replace("goto:", "");
+			String[] vars = line.split(":");
+			String name = vars[1];
 			for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
 				if (entry.getValue().equals(name)) {
 					readFrom(entry.getKey());
 					stopReading = true;
 				}
 			}
-		} else if (line.startsWith("stop")){
+		} else if (line.startsWith("stop")) {
 			System.exit(-1);
-		} else if(line.startsWith("input:")){
+		} else if (line.startsWith("input:")) {
 			String[] vars = line.split(":");
 			Scanner reader = new Scanner(System.in);
-			if(vars.length >= 3){
+			if (vars.length >= 3) {
 				System.out.println(vars[2]);
 			} else {
 				System.out.println("Enter input:");
 			}
 			String input = reader.nextLine();
 			strVars.put(vars[1], input);
-		} else if(line.startsWith("var")){
+		} else if (line.startsWith("var")) {
 			String[] vars = line.split(":");
-			if(vars[1].equals("str")){
+			if (vars[1].equals("str")) {
 				for (Map.Entry<String, String> entry : strVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
 						System.out.println("A variable with that name exists! :" + lineNumber);
@@ -155,7 +157,7 @@ public class m50Main {
 				}
 				strVars.put(vars[2], vars[3]);
 			}
-			if(vars[1].equals("int")){
+			if (vars[1].equals("int")) {
 				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
 						System.out.println("A variable with that name exists! :" + lineNumber);
@@ -164,16 +166,16 @@ public class m50Main {
 				}
 				intVars.put(vars[2], Integer.parseInt(vars[3]));
 			}
-			if(vars[1].equals("boo") || vars[1].equals("boolean")){
+			if (vars[1].equals("boo") || vars[1].equals("boolean")) {
 				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
 						System.out.println("A variable with that name exists! :" + lineNumber);
 						return true;
 					}
 				}
-				if(vars[3].equals("true")){
+				if (vars[3].equals("true")) {
 					booVars.put(vars[2], true);
-				} else if(vars[3].equals("false")){
+				} else if (vars[3].equals("false")) {
 					booVars.put(vars[2], false);
 				}
 			}
