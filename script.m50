@@ -7,8 +7,15 @@ print:"This does not get called"
 place:"name"
 print:"after name place"
 
-input:hello:Yo
-print:hello
+var:str:varName:Hi i am a variable
+print:varName
 
-input:test
-print:test
+var:int:number:56643
+print:number
+
+var:int:number:21
+
+place:"name"
+
+input:hello:Input a message
+print:hello

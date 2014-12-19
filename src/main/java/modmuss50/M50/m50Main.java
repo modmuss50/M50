@@ -12,6 +12,10 @@ public class m50Main {
 	public static HashMap<Integer, String> gotos = new HashMap<Integer, String>();
 	//Fist string is the var name second is the data
 	public static HashMap<String, String> strVars = new HashMap<String, String>();
+	//Fist string is the var name second is the data
+	public static HashMap<String, Integer> intVars = new HashMap<String, Integer>();
+	//Fist string is the var name second is the data
+	public static HashMap<String, Boolean> booVars = new HashMap<String, Boolean>();
 
 	public static Boolean stopReading = false;
 
@@ -43,7 +47,6 @@ public class m50Main {
 		System.out.println();
 		System.out.println();
 		System.out.println("Script finished");
-
 	}
 
 	public static void readFrom(int startLine) throws IOException {
@@ -78,13 +81,22 @@ public class m50Main {
 			}
 			if (line.startsWith("place")) {
 				String name = line;
-				gotos.put(linenumber, name.replaceAll("\"", "").replace("place:", ""));
+				Boolean canAdd= true;
+				for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
+					if(entry.getValue().equals(name.replaceAll("\"", "").replace("place:", ""))){
+						String output = entry.getValue();
+						System.out.println("A place exits with that name! :" + linenumber);
+						canAdd = false;
+					}
+				}
+				if(canAdd){
+					gotos.put(linenumber, name.replaceAll("\"", "").replace("place:", ""));
+				}
 			}
 			linenumber += 1;
 		}
 		br.close();
 	}
-
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
 		if (line.startsWith("print")) {
@@ -99,8 +111,19 @@ public class m50Main {
 						System.out.println(output);
 					}
 				}
+				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
+					if(entry.getKey().equals(vars[1])){
+						Integer output = entry.getValue();
+						System.out.println(output);
+					}
+				}
+				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
+					if(entry.getKey().equals(vars[1])){
+						Boolean output = entry.getValue();
+						System.out.println(output);
+					}
+				}
 			}
-
 		} else if (line.startsWith("goto")) {
 			String name = line.replaceAll("\"", "").replace("goto:", "");
 			for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
@@ -121,6 +144,39 @@ public class m50Main {
 			}
 			String input = reader.nextLine();
 			strVars.put(vars[1], input);
+		} else if(line.startsWith("var")){
+			String[] vars = line.split(":");
+			if(vars[1].equals("str")){
+				for (Map.Entry<String, String> entry : strVars.entrySet()) {
+					if (entry.getKey().equals(vars[2])) {
+						System.out.println("A variable with that name exists! :" + lineNumber);
+						return true;
+					}
+				}
+				strVars.put(vars[2], vars[3]);
+			}
+			if(vars[1].equals("int")){
+				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
+					if (entry.getKey().equals(vars[2])) {
+						System.out.println("A variable with that name exists! :" + lineNumber);
+						return true;
+					}
+				}
+				intVars.put(vars[2], Integer.parseInt(vars[3]));
+			}
+			if(vars[1].equals("boo") || vars[1].equals("boolean")){
+				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
+					if (entry.getKey().equals(vars[2])) {
+						System.out.println("A variable with that name exists! :" + lineNumber);
+						return true;
+					}
+				}
+				if(vars[3].equals("true")){
+					booVars.put(vars[2], true);
+				} else if(vars[3].equals("false")){
+					booVars.put(vars[2], false);
+				}
+			}
 		}
 		return true;
 	}
