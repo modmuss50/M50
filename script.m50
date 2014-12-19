@@ -9,3 +9,6 @@ print:"after name place"
 
 input:hello:Yo
 print:hello
+
+input:test
+print:test

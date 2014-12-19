@@ -95,7 +95,8 @@ public class m50Main {
 			} else {
 				for (Map.Entry<String, String> entry : strVars.entrySet()) {
 					if(entry.getKey().equals(vars[1])){
-						System.out.println(entry.getValue());
+						String output = entry.getValue();
+						System.out.println(output);
 					}
 				}
 			}
@@ -118,7 +119,8 @@ public class m50Main {
 			} else {
 				System.out.println("Enter input:");
 			}
-			strVars.put(vars[1], reader.next());
+			String input = reader.nextLine();
+			strVars.put(vars[1], input);
 		}
 		return true;
 	}
