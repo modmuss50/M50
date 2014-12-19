@@ -100,7 +100,10 @@ public class m50Main {
 	}
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
-		if (line.startsWith("print")) {
+		if(line.startsWith("//")){
+			//there is no need to do anything :)
+			return true;
+		} else if (line.startsWith("print")) {
 			String[] vars = line.split(":");
 			if (vars[1].contains("\"")) {
 				String message = line.replaceAll("\"", "").replace("print:", "");
