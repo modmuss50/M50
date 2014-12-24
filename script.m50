@@ -32,3 +32,5 @@ place:name
 input:hello:Input a message
 
 print:hello
+
+if:hello:=:"hi"

@@ -1,5 +1,7 @@
 package modmuss50.M50;
 
+import com.javafx.tools.doclets.formats.html.SourceToHTMLConverter;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -180,6 +182,18 @@ public class m50Main {
 					booVars.put(vars[2], true);
 				} else if (vars[3].equals("false")) {
 					booVars.put(vars[2], false);
+				}
+			}
+		} else if(line.startsWith("if")){
+			String[] vars = line.split(":");
+			if(vars[1].contains("\"")){
+
+			}else{
+				for (Map.Entry<String, String> entry : strVars.entrySet()) {
+					if (entry.getKey().equals(vars[1])) {
+						String output = entry.getValue();
+
+					}
 				}
 			}
 		}
