@@ -102,7 +102,7 @@ public class m50Main {
 	}
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
-		if(line.startsWith("//")){
+		if(line.startsWith("//") || line.startsWith("-")){
 			//there is no need to do anything :)
 			return true;
 		} else if (line.startsWith("print")) {
@@ -186,14 +186,61 @@ public class m50Main {
 			}
 		} else if(line.startsWith("if")){
 			String[] vars = line.split(":");
-			if(vars[1].contains("\"")){
-
-			}else{
-				for (Map.Entry<String, String> entry : strVars.entrySet()) {
-					if (entry.getKey().equals(vars[1])) {
-						String output = entry.getValue();
-
+			if(vars.length <=3){
+				System.out.println("Error at " + lineNumber);
+			} else {
+				if(vars[1].equals("str")){
+					String var1 = null;
+					String var2 = null;
+					if(vars[2].contains("\"")){
+						var1 = vars[2].replace("\"", "");
+					}else{
+						for (Map.Entry<String, String> entry : strVars.entrySet()) {
+							if (entry.getKey().equals(vars[2])) {
+								String output = entry.getValue();
+								var1 = output;
+							}
+						}
 					}
+					if(vars[3].startsWith("\"")){
+						var2 = vars[3].replaceAll("\"", "");
+					}else{
+						for (Map.Entry<String, String> entry : strVars.entrySet()) {
+							if (entry.getKey().equals(vars[3])) {
+								String output = entry.getValue();
+								var2 = output;
+							}
+						}
+					}
+					int endIf = 0;
+					endIf = findEndIf(lineNumber);
+					boolean hasElse = hasElse(lineNumber);
+					if(endIf != 0){
+						//TODO fix else tomorrow becuase I am now tired :(
+						if(vars[4].equals("=")){
+							if(var1.equals(var2)){
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if(hasElse){
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("!=")){
+							if(!var1.equals(var2)){
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if(hasElse){
+									int elseNum = findElse(lineNumber);
+									System.out.println(elseNum);
+									runIf(elseNum, endIf, true);
+								}
+							}
+						}
+					} else {
+						System.out.println("No end if found! at " + lineNumber);
+					}
+
 				}
 			}
 		}
@@ -221,4 +268,75 @@ public class m50Main {
 			is.close();
 		}
 	}
+
+	public static int findEndIf(int startNum) throws IOException {
+		int linenumber = 1;
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(linenumber >= startNum){
+				if (line.startsWith("endIf") || line.startsWith("else")) {
+					return linenumber;
+				}
+			}
+			linenumber += 1;
+		}
+		br.close();
+		return 0;
+	}
+
+	public static int runIf(int startNum, int endNum, boolean isElse) throws IOException {
+		int linenumber = 1;
+		boolean hasElse = hasElse(startNum);
+//		if(hasElse && !isElse){
+//			endNum = findEndIf(startNum);
+//		}
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(linenumber >= startNum && linenumber <= endNum){
+				processLine(line.replace("-", ""), linenumber);
+			}
+			linenumber += 1;
+		}
+		br.close();
+		return 0;
+	}
+
+	public static boolean hasElse(int startNum) throws IOException {
+		int linenumber = 1;
+		int lastNum = findEndIf(startNum);
+		if(lastNum == 0){
+			return false;
+		}
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(linenumber >= startNum && linenumber <= lastNum){
+				if (line.startsWith("else")) {
+					return true;
+				}
+			}
+			linenumber += 1;
+		}
+		br.close();
+		return false;
+	}
+
+	public static int findElse(int startNum) throws IOException {
+		int linenumber = 1;
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(linenumber >= startNum){
+				if (line.startsWith("else")) {
+					return linenumber;
+				}
+			}
+			linenumber += 1;
+		}
+		br.close();
+		return 0;
+	}
+
 }

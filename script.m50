@@ -1,4 +1,5 @@
 #m50
+place:start
 //This prints out a message
 print:"This is a test"
 
@@ -33,4 +34,16 @@ input:hello:Input a message
 
 print:hello
 
-if:hello:=:"hi"
+//If the var hello does not equal hi this will be called.
+if:str:hello:"hi":!=
+-print:"This is called if the text entered was not hi"
+-print:"This is showing that two lines can be used"
+else
+-print:"Oh! hello!"
+endIf
+
+//If the var hello equals run it will restart the whole script
+if:str:hello:"run":=
+-print:"This will restart the program"
+-goto:start
+endIf
