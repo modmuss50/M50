@@ -30,12 +30,11 @@ var:int:number:21
 place:name
 
 //This is a input that adds a variable called hello
-input:hello:Input a message
+input:input:Input a message
 
-print:hello
 
 //If the var hello does not equal hi this will be called.
-if:str:hello:"hi":!=
+if:str:input:"hi":!=
 -print:"This is called if the text entered was not hi"
 -print:"This is showing that two lines can be used"
 else
@@ -43,7 +42,16 @@ else
 endIf
 
 //If the var hello equals run it will restart the whole script
-if:str:hello:"run":=
+if:str:input:"run":=
 -print:"This will restart the program"
 -goto:start
 endIf
+
+if:int:1:1:=
+-print:"One equals 1!"
+endIf
+
+if:boo:true:false:=
+-print:"True equals false!"
+endIf
+

@@ -1,7 +1,5 @@
 package modmuss50.M50;
 
-import com.javafx.tools.doclets.formats.html.SourceToHTMLConverter;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +100,7 @@ public class m50Main {
 	}
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
-		if(line.startsWith("//") || line.startsWith("-")){
+		if (line.startsWith("//") || line.startsWith("-")) {
 			//there is no need to do anything :)
 			return true;
 		} else if (line.startsWith("print")) {
@@ -184,17 +182,17 @@ public class m50Main {
 					booVars.put(vars[2], false);
 				}
 			}
-		} else if(line.startsWith("if")){
+		} else if (line.startsWith("if")) {
 			String[] vars = line.split(":");
-			if(vars.length <=3){
+			if (vars.length <= 3) {
 				System.out.println("Error at " + lineNumber);
 			} else {
-				if(vars[1].equals("str")){
+				if (vars[1].equals("str")) {
 					String var1 = null;
 					String var2 = null;
-					if(vars[2].contains("\"")){
+					if (vars[2].contains("\"")) {
 						var1 = vars[2].replace("\"", "");
-					}else{
+					} else {
 						for (Map.Entry<String, String> entry : strVars.entrySet()) {
 							if (entry.getKey().equals(vars[2])) {
 								String output = entry.getValue();
@@ -202,9 +200,9 @@ public class m50Main {
 							}
 						}
 					}
-					if(vars[3].startsWith("\"")){
+					if (vars[3].startsWith("\"")) {
 						var2 = vars[3].replaceAll("\"", "");
-					}else{
+					} else {
 						for (Map.Entry<String, String> entry : strVars.entrySet()) {
 							if (entry.getKey().equals(vars[3])) {
 								String output = entry.getValue();
@@ -213,27 +211,215 @@ public class m50Main {
 						}
 					}
 					int endIf = 0;
-					endIf = findEndIf(lineNumber);
+					endIf = findEndIfWithElse(lineNumber);
 					boolean hasElse = hasElse(lineNumber);
-					if(endIf != 0){
-						//TODO fix else tomorrow becuase I am now tired :(
-						if(vars[4].equals("=")){
-							if(var1.equals(var2)){
+					if (endIf != 0) {
+						if (vars[4].equals("=")) {
+							if (var1.equals(var2)) {
 								runIf(lineNumber + 1, endIf, false);
 							} else {
-								if(hasElse){
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
 									int elseNum = findElse(lineNumber);
 									runIf(elseNum, endIf, true);
 								}
 							}
-						} else if (vars[4].equals("!=")){
-							if(!var1.equals(var2)){
+						} else if (vars[4].equals("!=")) {
+							if (!var1.equals(var2)) {
 								runIf(lineNumber + 1, endIf, false);
 							} else {
-								if(hasElse){
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
 									int elseNum = findElse(lineNumber);
-									System.out.println(elseNum);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						}
+					} else {
+						System.out.println("No end if found! at " + lineNumber);
+					}
+
+				} else if (vars[1].equals("int")) {
+					int var1 = 0;
+					int var2 = 0;
+					for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
+						if (entry.getKey().equals(vars[2])) {
+							int output = entry.getValue();
+							var1 = output;
+						}
+					}
+					if (var1 == 0) {
+						var1 = Integer.parseInt(vars[2]);
+					}
+
+					for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
+						if (entry.getKey().equals(vars[3])) {
+							int output = entry.getValue();
+							var2 = output;
+						}
+					}
+					if (var2 == 0) {
+						var2 = Integer.parseInt(vars[3]);
+					}
+					int endIf = 0;
+					endIf = findEndIfWithElse(lineNumber);
+					boolean hasElse = hasElse(lineNumber);
+					if (endIf != 0) {
+						if (vars[4].equals("=")) {
+							if (var1 == var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
 									runIf(elseNum, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("!=")) {
+							if (var1 != var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals(">")) {
+							if (var1 > var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("<")) {
+							if (var1 < var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals(">=")) {
+							if (var1 >= var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("<=")) {
+							if (var1 <= var2) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("!>")) {
+							if (!(var1 > var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("!<")) {
+							if (!(var1 < var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals(">=!")) {
+							if (!(var1 >= var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("<=!")) {
+							if (!(var1 <= var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
+								}
+							}
+						}
+					} else {
+						System.out.println("No end if found! at " + lineNumber);
+					}
+				}if (vars[1].equals("boo") || vars[1].equals("boolean")) {
+					boolean var1 = false;
+					boolean var2 = false;
+
+					if (vars[2].equals("true")) {
+						var1 = true;
+					} else if (vars[2].equals("false")) {
+						var1 = false;
+					} else{
+						for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
+							if (entry.getKey().equals(vars[2])) {
+								Boolean output = entry.getValue();
+								var1 = output;
+							}
+						}
+					}
+
+					if (vars[3].equals("true")) {
+						var2 = true;
+					} else if (vars[3].equals("false")) {
+						var2 = false;
+					} else{
+						for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
+							if (entry.getKey().equals(vars[3])) {
+								Boolean output = entry.getValue();
+								var2 = output;
+							}
+						}
+					}
+					int endIf = 0;
+					endIf = findEndIfWithElse(lineNumber);
+					boolean hasElse = hasElse(lineNumber);
+					if (endIf != 0) {
+						if (vars[4].equals("=")) {
+							if (var1 = (var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum, endIf, true);
+								}
+							}
+						} else if (vars[4].equals("!=")) {
+							if (var1 != (var2)) {
+								runIf(lineNumber + 1, endIf, false);
+							} else {
+								if (hasElse) {
+									endIf = findEndIfWithoutElse(lineNumber);
+									int elseNum = findElse(lineNumber);
+									runIf(elseNum + 1, endIf, true);
 								}
 							}
 						}
@@ -269,13 +455,29 @@ public class m50Main {
 		}
 	}
 
-	public static int findEndIf(int startNum) throws IOException {
+	public static int findEndIfWithElse(int startNum) throws IOException {
 		int linenumber = 1;
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(linenumber >= startNum){
+			if (linenumber >= startNum) {
 				if (line.startsWith("endIf") || line.startsWith("else")) {
+					return linenumber;
+				}
+			}
+			linenumber += 1;
+		}
+		br.close();
+		return 0;
+	}
+
+	public static int findEndIfWithoutElse(int startNum) throws IOException {
+		int linenumber = 1;
+		BufferedReader br = new BufferedReader(new FileReader(script));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if (linenumber >= startNum) {
+				if (line.startsWith("endIf")) {
 					return linenumber;
 				}
 			}
@@ -287,14 +489,10 @@ public class m50Main {
 
 	public static int runIf(int startNum, int endNum, boolean isElse) throws IOException {
 		int linenumber = 1;
-		boolean hasElse = hasElse(startNum);
-//		if(hasElse && !isElse){
-//			endNum = findEndIf(startNum);
-//		}
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(linenumber >= startNum && linenumber <= endNum){
+			if (linenumber >= startNum && linenumber <= endNum) {
 				processLine(line.replace("-", ""), linenumber);
 			}
 			linenumber += 1;
@@ -305,14 +503,14 @@ public class m50Main {
 
 	public static boolean hasElse(int startNum) throws IOException {
 		int linenumber = 1;
-		int lastNum = findEndIf(startNum);
-		if(lastNum == 0){
+		int lastNum = findEndIfWithElse(startNum);
+		if (lastNum == 0) {
 			return false;
 		}
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(linenumber >= startNum && linenumber <= lastNum){
+			if (linenumber >= startNum && linenumber <= lastNum) {
 				if (line.startsWith("else")) {
 					return true;
 				}
@@ -328,7 +526,7 @@ public class m50Main {
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String line;
 		while ((line = br.readLine()) != null) {
-			if(linenumber >= startNum){
+			if (linenumber >= startNum) {
 				if (line.startsWith("else")) {
 					return linenumber;
 				}
