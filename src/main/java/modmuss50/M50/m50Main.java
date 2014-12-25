@@ -20,22 +20,22 @@ public class m50Main {
 	public static Boolean stopReading = false;
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Starting M50");
+		m50Utils.print("Starting M50");
 		File thisfolder = new File(".").getAbsoluteFile();
 		script = new File(thisfolder, "script.m50");
 		if (!script.exists()) {
-			System.out.println("No script file found!");
+			m50Utils.print("No script file found!");
 			System.exit(-1);
 		}
-		System.out.println("Will now try to run " + Integer.toString(countLines(script)) + " lines of script");
-		System.out.println();
-		System.out.println();
+		m50Utils.print("Will now try to run " + Integer.toString(countLines(script)) + " lines of script");
+		m50Utils.print();
+		m50Utils.print();
 
 		BufferedReader br = new BufferedReader(new FileReader(script));
 		String scriptArgs;
 		scriptArgs = br.readLine();
 		if (!scriptArgs.startsWith("#m50")) {
-			System.out.println("this is not a script file");
+			m50Utils.print("this is not a script file");
 			System.exit(-2);
 		}
 		br.close();
@@ -44,9 +44,9 @@ public class m50Main {
 			loadPlaces();
 		}
 		readFrom(1);
-		System.out.println();
-		System.out.println();
-		System.out.println("Script finished");
+		m50Utils.print();
+		m50Utils.print();
+		m50Utils.print("Script finished");
 	}
 
 	public static void readFrom(int startLine) throws IOException {
@@ -86,7 +86,7 @@ public class m50Main {
 				for (Map.Entry<Integer, String> entry : gotos.entrySet()) {
 					if (entry.getValue().equals(name)) {
 						String output = entry.getValue();
-						System.out.println("A place exits with that name! :" + linenumber);
+						m50Utils.print("A place exits with that name! :" + linenumber);
 						canAdd = false;
 					}
 				}
@@ -107,24 +107,24 @@ public class m50Main {
 			String[] vars = line.split(":");
 			if (vars[1].contains("\"")) {
 				String message = line.replaceAll("\"", "").replace("print:", "");
-				System.out.println(message);
+				m50Utils.print(message);
 			} else {
 				for (Map.Entry<String, String> entry : strVars.entrySet()) {
 					if (entry.getKey().equals(vars[1])) {
 						String output = entry.getValue();
-						System.out.println(output);
+						m50Utils.print(output);
 					}
 				}
 				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
 					if (entry.getKey().equals(vars[1])) {
 						Integer output = entry.getValue();
-						System.out.println(output);
+						m50Utils.print(output);
 					}
 				}
 				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
 					if (entry.getKey().equals(vars[1])) {
 						Boolean output = entry.getValue();
-						System.out.println(output);
+						m50Utils.print(output);
 					}
 				}
 			}
@@ -143,9 +143,9 @@ public class m50Main {
 			String[] vars = line.split(":");
 			Scanner reader = new Scanner(System.in);
 			if (vars.length >= 3) {
-				System.out.println(vars[2]);
+				m50Utils.print(vars[2]);
 			} else {
-				System.out.println("Enter input:");
+				m50Utils.print("Enter input:");
 			}
 			String input = reader.nextLine();
 			strVars.put(vars[1], input);
@@ -154,7 +154,7 @@ public class m50Main {
 			if (vars[1].equals("str")) {
 				for (Map.Entry<String, String> entry : strVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
-						System.out.println("A variable with that name exists! :" + lineNumber);
+						m50Utils.print("A variable with that name exists! :" + lineNumber);
 						return true;
 					}
 				}
@@ -163,7 +163,7 @@ public class m50Main {
 			if (vars[1].equals("int")) {
 				for (Map.Entry<String, Integer> entry : intVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
-						System.out.println("A variable with that name exists! :" + lineNumber);
+						m50Utils.print("A variable with that name exists! :" + lineNumber);
 						return true;
 					}
 				}
@@ -172,7 +172,7 @@ public class m50Main {
 			if (vars[1].equals("boo") || vars[1].equals("boolean")) {
 				for (Map.Entry<String, Boolean> entry : booVars.entrySet()) {
 					if (entry.getKey().equals(vars[2])) {
-						System.out.println("A variable with that name exists! :" + lineNumber);
+						m50Utils.print("A variable with that name exists! :" + lineNumber);
 						return true;
 					}
 				}
@@ -185,7 +185,7 @@ public class m50Main {
 		} else if (line.startsWith("if")) {
 			String[] vars = line.split(":");
 			if (vars.length <= 3) {
-				System.out.println("Error at " + lineNumber);
+				m50Utils.print("Error at " + lineNumber);
 			} else {
 				if (vars[1].equals("str")) {
 					String var1 = null;
@@ -236,7 +236,7 @@ public class m50Main {
 							}
 						}
 					} else {
-						System.out.println("No end if found! at " + lineNumber);
+						m50Utils.print("No end if found! at " + lineNumber);
 					}
 
 				} else if (vars[1].equals("int")) {
@@ -367,7 +367,7 @@ public class m50Main {
 							}
 						}
 					} else {
-						System.out.println("No end if found! at " + lineNumber);
+						m50Utils.print("No end if found! at " + lineNumber);
 					}
 				}if (vars[1].equals("boo") || vars[1].equals("boolean")) {
 					boolean var1 = false;
@@ -424,7 +424,7 @@ public class m50Main {
 							}
 						}
 					} else {
-						System.out.println("No end if found! at " + lineNumber);
+						m50Utils.print("No end if found! at " + lineNumber);
 					}
 
 				}
