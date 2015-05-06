@@ -1,12 +1,15 @@
 #m50
+//This is the start of the script
 place:start
+
 //This prints out a message
 print:"This is a test"
 
-//This goes to line 10
+//This goes to name
 goto:name
 
 print:"This does not get called"
+//because it is going to name
 
 //This is loaded before the script is executed
 place:name
@@ -15,6 +18,7 @@ print:"after name place"
 //This is a new string variable
 // :type:NameOfTheVar:Data
 var:str:varName:Hi i am a variable
+//this is a string variable called varName
 
 //This prints out the variable
 print:varName
@@ -35,23 +39,23 @@ input:input:Input a message
 
 //If the var hello does not equal hi this will be called.
 if:str:input:"hi":!=
--print:"This is called if the text entered was not hi"
--print:"This is showing that two lines can be used"
+    -print:"This is called if the text entered was not hi"
+    -print:"This is showing that two lines can be used"
 else
--print:"Oh! hello!"
+    -print:"Oh! hello!"
 endIf
 
 //If the var hello equals run it will restart the whole script
 if:str:input:"run":=
--print:"This will restart the program"
--goto:start
+    -print:"This will restart the program"
+    -goto:start
 endIf
 
 if:int:1:1:=
--print:"One equals 1!"
+    -print:"One equals 1!"
 endIf
 
 if:boo:true:false:=
--print:"True equals false!"
+    -print:"True equals false!"
 endIf
 

@@ -79,6 +79,7 @@ public class m50Main {
 			if (stopReading) {
 				return;
 			}
+			line = line.replaceAll("	", "");
 			if (line.startsWith("place")) {
 				String[] vars = line.split(":");
 				String name = vars[1];
@@ -100,6 +101,7 @@ public class m50Main {
 	}
 
 	public static boolean processLine(String line, int lineNumber) throws IOException {
+		line = line.replaceAll("	", "");
 		if (line.startsWith("//") || line.startsWith("-")) {
 			//there is no need to do anything :)
 			return true;

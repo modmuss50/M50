@@ -1,8 +1,5 @@
 package modmuss50.M50;
 
-/**
- * Created by mark on 25/12/14.
- */
 public class m50Utils {
 
 	public static void print(String string) {
